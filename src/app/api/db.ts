@@ -1,11 +1,24 @@
 import { PrismaClient } from "@prisma/client";
 import { HEARTBEAT_DEADLINE_MS } from "../game";
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import ws from "ws";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
+function buildPrismaClient() {
+    neonConfig.webSocketConstructor = ws;
+    const pool = new Pool({
+        connectionString: process.env.DATABASE_URL
+    });
+    
+    const adapter = new PrismaNeon(pool);
+    return new PrismaClient({ adapter });
+}
+
 export const prisma =
     globalForPrisma.prisma ||
-    new PrismaClient();
+    buildPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
     globalForPrisma.prisma = prisma;
