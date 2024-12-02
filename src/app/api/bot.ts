@@ -1,3 +1,4 @@
+import { EMOJI_TIMER_MS } from '../game';
 import { last, pickRandom } from '../util';
 import { prisma } from './db';
 import { getHistory } from './match/state';
@@ -16,6 +17,12 @@ export const MATCHMAKE_WITH_BOT_DEADLINE = 8;
  * against is also choosing an emoji.
  */
 const BOT_CHOOSE_CHANCE = 0.2;
+
+/**
+ * The chance for a bot to "slack off" and be idle on a tick when they have
+ * more than 1/3rd of their alloted time left.
+ */
+const BOT_SLACK_OFF_CHANCE = 0.6;
 
 /**
  * The chance for a bot to ignore their own choices and try to make a choice
@@ -164,6 +171,13 @@ export async function advanceSimulation(id: string) {
 
         console.log(`(info) 🤖 #${bot.id}: picked ${emoji}`);
         return;
+    }
+
+    const emojiDeadline = (EMOJI_TIMER_MS - (new Date().getTime() - last(botHistory).createdAt.getTime()));
+    if (emojiDeadline > EMOJI_TIMER_MS / 3) {
+        if (Math.random() < BOT_SLACK_OFF_CHANCE) {
+            return; // zzz
+        }
     }
 
     if (
