@@ -22,7 +22,7 @@ export interface EmojiData {
     id: string;
     name: string;
     native: string;
-    unified: any; // we don't need this for now, feel free to change the type of these if we will ever need those
-    keywords: any;
-    shortcodes: any;
+    unified: unknown; // we don't need this for now, feel free to change the type of these if we will ever need those
+    keywords: unknown;
+    shortcodes: unknown;
 }

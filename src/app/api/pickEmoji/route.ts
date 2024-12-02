@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { turnstileVerify } from '../turnstile';
 import { apiError } from '../util';
 import { prisma, runWhileCleaningUp } from '../db';
 import emojiRegex from 'emoji-regex';

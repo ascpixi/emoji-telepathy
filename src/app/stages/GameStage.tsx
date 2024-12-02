@@ -142,7 +142,7 @@ export default function GameStage({ game, visible, matchState }: {
                 </section>
 
                 <div className="flex flex-col gap-2 items-center">
-                  <p className="font-bold">other player's choice:</p>
+                  <p className="font-bold">other player&apos;s choice:</p>
 
                   <div className="bg-[#ffe2b6] rounded-lg p-4 shadow-sm w-24 h-24 flex justify-center items-center">
                     {
@@ -199,7 +199,7 @@ export default function GameStage({ game, visible, matchState }: {
           {
             didWin
             ? (<>Nice, you both picked the same emoji! 🥳<br/></>)
-            : (<>Oops, you couldn't find the same emoji in time... 😣<br/></>)
+            : (<>Oops, you couldn&apos;t find the same emoji in time... 😣<br/></>)
           }
         </p>
 

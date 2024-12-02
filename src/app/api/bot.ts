@@ -1,4 +1,4 @@
-import { last, pickRandom, rng } from '../util';
+import { last, pickRandom } from '../util';
 import { prisma } from './db';
 import { getHistory } from './match/state';
 

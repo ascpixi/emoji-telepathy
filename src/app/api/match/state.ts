@@ -106,7 +106,7 @@ export async function generateState(id: string): Promise<MatchState> {
         return { state: "INVALID" };
 
     if (player.partnerId == null) {
-        let secsSinceStart = (new Date().getTime() - player.createdAt.getTime()) / 1000;
+        const secsSinceStart = (new Date().getTime() - player.createdAt.getTime()) / 1000;
         if (secsSinceStart >= MATCHMAKE_WITH_BOT_DEADLINE) {
             // This player has waited long enough to be matched with a bot.
             // Create one, and assign it as their partner.

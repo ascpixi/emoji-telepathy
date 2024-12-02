@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { turnstileVerify } from '../turnstile';
 import { generateState, MatchState } from './state';
 import { apiError } from '../util';
 import { prisma } from '../db';
