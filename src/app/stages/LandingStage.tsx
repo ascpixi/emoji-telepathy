@@ -39,7 +39,7 @@ export default function LandingStage({ visible, onStart }: {
       </main>
 
       <footer className="w-full font-bold flex flex-col items-center gap-4 pb-16">
-        <p>see the source code at <Link href="https://github.com/ascpixi/emoji-telepathy" content="github.com/ascpixi/emoji-telepathy"/></p><br/>
+        <p>see the source code at <Link href="https://github.com/ascpixi/emoji-telepathy" content="github.com/ascpixi/emoji-telepathy"/></p>
         <p>created with 🧡 by <Link href="https://ascpixi.dev" content="@ascpixi" newTab={true}/> for</p>
         <a href="https://highseas.hackclub.com/" target="_blank">
           <Image
