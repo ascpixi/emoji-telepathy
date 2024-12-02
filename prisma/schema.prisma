@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+/// Represents a transient player session.
+model Player {
+  id            String    @id @default(uuid())
+
+  /// If `true`, this player is simulated on the server-side. If there aren't any
+  /// online players to match with an awaiting client, a simulated player is created
+  /// instead.
+  isSimulated   Boolean   @default(false)
+
+  /// Represents the other player this player is in a match with. If `null`,
+  /// the matchmaking system has not yet found a player to connect this player to.
+  partner       Player?   @relation("PlayerPair", fields: [partnerId], references: [id])
+  partnerId     String?   @unique // Make sure each player can only be partnered once
+  
+  /// A reverse relation to `partner` - the player who has this player as their partner.
+  pairedWith    Player?   @relation("PlayerPair")
+
+  /// The time the player session was created on.
+  createdAt     DateTime  @default(now())
+
+  /// The emojis the player has picked so far. One player might have one
+  /// more `EmojiPick` entry than their partner, which indicates said player
+  /// is waiting for their partner to pick an emoji.
+  emojiHistory    EmojiPick[]
+
+  /// The last time the player has sent a heartbeat request.
+  lastHeartbeat   DateTime    @default(now())
+}
+
+model EmojiPick {
+  id  Int     @id @default(autoincrement())
+
+  /// The time the pick was created.
+  createdAt   DateTime  @default(now())
+
+  /// The actual emoji in question.
+  emoji     String
+
+  /// The player that picked the emoji.
+  by      Player @relation(fields: [byId], references: [id])
+  byId    String
+}

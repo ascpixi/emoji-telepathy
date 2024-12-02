@@ -3,19 +3,55 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f9c19c;
+  --foreground: #9a3834;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Nunito, 'Arial Rounded MT', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+
+em-emoji-picker {
+  --background-rgb: 85, 170, 255;
+  --border-radius: 24px;
+  --category-icon-size: 24px;
+  --color-border-over: rgba(0, 0, 0, 0.1);
+  --color-border: rgba(0, 0, 0, 0.05);
+  --font-family: Nunito, 'Arial Rounded MT', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+  --font-size: 20px;
+  --rgb-accent: 140, 50, 48;
+  --rgb-background: 255, 226, 182;
+  --rgb-color: 204, 108, 101;
+  --rgb-input: 255, 253, 228;
+  --shadow: 5px 5px 12px -8px rgba(147, 51, 46, 0.25);
+
+  font-weight: bold;
+}
+
+body {
+  --sb-track-color: #fdc9a1;
+  --sb-thumb-color: #9a3532;
+  --sb-size: 10px;
+}
+
+body::-webkit-scrollbar {
+  width: var(--sb-size)
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 15px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 15px;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
 }
