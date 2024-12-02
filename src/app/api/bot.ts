@@ -10,7 +10,7 @@ type EmojiMeta = typeof twemoji.emojis[keyof typeof twemoji.emojis];
 /**
  * Determines how much time a player must wait to be matched with a bot.
  */
-export const MATCHMAKE_WITH_BOT_DEADLINE = 8;
+export const MATCHMAKE_WITH_BOT_DEADLINE = 7.25;
 
 /** 
  * The chance for a bot to pick an emoji on a tick, where the player it is playing
