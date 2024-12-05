@@ -1,8 +1,9 @@
-import { EMOJI_TIMER_MS, HEARTBEAT_DEADLINE_MS } from '@/app/game';
-import { prisma } from '../db';
-import { getNewer, last } from '@/app/util';
-import { Player } from '@prisma/client';
-import { advanceSimulation, MATCHMAKE_WITH_BOT_DEADLINE } from '../bot';
+import { Player } from "@prisma/client";
+
+import { EMOJI_TIMER_MS, HEARTBEAT_DEADLINE_MS } from "@/app/game";
+import { prisma } from "../db";
+import { getNewer, last } from "@/app/util";
+import { advanceSimulation, MATCHMAKE_WITH_BOT_DEADLINE } from "../bot";
 
 /**
  * Represents a state of a match, where the match has not yet begun, and is
@@ -85,7 +86,7 @@ export async function getHistory(player: Player) {
     const historyLength = Math.min(playerEmojis.length, partnerEmojis.length);
 
     const allEmojis = playerEmojis.slice(0, historyLength)
-        .map((x, i) => ({ you: x.emoji, partner: partnerEmojis[i].emoji }) );
+        .map((x, i) => ({ you: x.emoji, partner: partnerEmojis[i].emoji }));
 
     return {
         player: playerEmojis,
@@ -156,7 +157,7 @@ export async function generateState(id: string): Promise<MatchState> {
         if (
             // If the last emojis are equal, that means the players won
             (last(history.all).partner == last(history.all).you) ||
-    
+
             // ...however, if any of the players didn't pick an emoji in time, the game also ends, this time with the players losing
             (last(history.player).createdAt < emojiDeadline || last(history.partner).createdAt < emojiDeadline)
         ) {
@@ -172,7 +173,7 @@ export async function generateState(id: string): Promise<MatchState> {
         // We add 1000ms to compensate for latency. This means that for a short period of time,
         // players can still pick an emoji, even if the timer hit 0. This is intentional.
         const begunAt = getNewer(player.createdAt, partnerState.createdAt);
-        if (begunAt.getTime() + 1000 < emojiDeadline.getTime()) {
+        if (begunAt.getTime() + 900 < emojiDeadline.getTime()) {
             return {
                 state: "ENDED",
                 history: history.all

@@ -1,9 +1,9 @@
-import { EMOJI_TIMER_MS } from '../game';
-import { last, pickRandom } from '../util';
-import { prisma } from './db';
-import { getHistory } from './match/state';
+import { EMOJI_TIMER_MS } from "../game";
+import { chance, last, pickRandom } from "../util";
+import { prisma } from "./db";
+import { getHistory } from "./match/state";
 
-import twemoji from '@emoji-mart/data/sets/15/twitter.json'
+import twemoji from "@emoji-mart/data/sets/15/twitter.json"
 
 type EmojiMeta = typeof twemoji.emojis[keyof typeof twemoji.emojis];
 
@@ -42,7 +42,7 @@ const BOT_INITIAL_WAIT_MS = 1200;
  * player has, the bot may peek what the player has chosen, and choose that,
  * artificially ending the game.
  */
-const BOT_CHEAT_THRESHOLD = 10;
+const BOT_CHEAT_THRESHOLD = 12;
 
 /**
  * The chance for a bot to cheat. Only applies after `BOT_CHEAT_THRESHOLD`.
@@ -157,7 +157,7 @@ export async function advanceSimulation(id: string) {
     // Simulate thinking - if the player isn't waiting for us right now,
     // the chance for us to pick an emoji is random.
     if (botHistory.length == playerHistory.length) {
-        if (!(Math.random() < BOT_CHOOSE_CHANCE)) {
+        if (!chance(BOT_CHOOSE_CHANCE)) {
             return; // we are "thinking"
         }
     }
@@ -175,7 +175,7 @@ export async function advanceSimulation(id: string) {
 
     const emojiDeadline = (EMOJI_TIMER_MS - (new Date().getTime() - last(botHistory).createdAt.getTime()));
     if (emojiDeadline > EMOJI_TIMER_MS / 3) {
-        if (Math.random() < BOT_SLACK_OFF_CHANCE) {
+        if (chance(BOT_SLACK_OFF_CHANCE)) {
             return; // zzz
         }
     }
@@ -188,7 +188,7 @@ export async function advanceSimulation(id: string) {
         playerHistory.length > botHistory.length &&
 
         // ...and chance tells us to cheat...
-        Math.random() < BOT_CHEAT_CHANCE
+        chance(BOT_CHEAT_CHANCE)
     ) {
         // ...then cheat! >:3
         await prisma.emojiPick.create({
@@ -212,7 +212,7 @@ export async function advanceSimulation(id: string) {
     while (similar === null && n <= history.all.length) {
         let emojis: string[];
 
-        if (history.all.length > 3 && Math.random() < BOT_IGNORE_SELF_CHANCE) {
+        if (history.all.length > 3 && chance(BOT_IGNORE_SELF_CHANCE)) {
             emojis = playerHistory.slice(-n).map(x => x.emoji);
         } else {
             emojis = history.all.slice(-n).flatMap(x => [x.you, x.partner])
@@ -225,7 +225,7 @@ export async function advanceSimulation(id: string) {
     if (similar === null) {
         // We still couldn't find any similar emoji (?!?!?!), try picking a random one...
         let randomEmoji: string | null = null;
-        
+
         while (randomEmoji === null || exclude.has(randomEmoji)) {
             randomEmoji = pickRandom(emojiArray).skins[0].native;
         }

@@ -1,9 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import emojiRegex from "emoji-regex";
+import { NextRequest, NextResponse } from "next/server";
 
-import { apiError } from '../util';
-import { prisma, runWhileCleaningUp } from '../db';
-import emojiRegex from 'emoji-regex';
+import { apiError, requireParams } from "../util";
+import { prisma, runWhileCleaningUp } from "../db";
 
+/**
+ * Represents the deserialized JSON schema of the `/api/pickEmoji` API endpoint.
+ */
 export type ApiPickEmojiResponseSchema = {
     success: true
 } | {
@@ -15,15 +18,17 @@ export type ApiPickEmojiResponseSchema = {
  * Picks an emoji. This endpoint can only be called once per round.
  */
 export async function GET(req: NextRequest): Promise<NextResponse<ApiPickEmojiResponseSchema>> {
-    if (!req.nextUrl.searchParams.has("playerId"))
-        return apiError("Missing 'playerId' parameter");
+    const params = requireParams(req.nextUrl.searchParams, {
+        playerId: "string",
+        emoji: "string"
+    });
 
-    if (!req.nextUrl.searchParams.has("emoji"))
-        return apiError("Missing 'emoji' parameter");
+    if (!params.ok)
+        return apiError(params.error);
 
     // The following will ignore any extraneous characters before/after the actual
     // emoji, and will only fail if there's e.g. more than one emoji.
-    const emojiMatch = req.nextUrl.searchParams.get("emoji")!.match(emojiRegex());
+    const emojiMatch = params.value.emoji.match(emojiRegex());
     if (emojiMatch == null || emojiMatch.length != 1)
         return apiError("Malformed emoji");
 
@@ -31,27 +36,27 @@ export async function GET(req: NextRequest): Promise<NextResponse<ApiPickEmojiRe
 
     return await runWhileCleaningUp(async () => {
         const player = await prisma.player.findFirst({
-            where: { id: req.nextUrl.searchParams.get("playerId")! },
+            where: { id: params.value.playerId },
             select: {
                 id: true,
                 partnerId: true
             }
         });
-    
+
         if (player == null)
             return apiError("Unknown player ID");
-    
+
         if (player.partnerId == null)
             return apiError("Cannot pick an emoji while searching for a partner");
-    
+
         const playerPickCount = await prisma.emojiPick.count({
             where: { byId: player.id }
         });
-    
+
         const partnerPickCount = await prisma.emojiPick.count({
             where: { byId: player.partnerId }
         });
-    
+
         // The number of the player's emoji picks must be equal (both the partner and
         // the player didn't pick) or less than (the partner already picked) the number
         // of the partner's emoji picks.
@@ -85,7 +90,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<ApiPickEmojiRe
 
         if (playerPickedThat)
             return apiError("That emoji was already picked before by yourself");
-    
+
         await prisma.emojiPick.create({
             data: {
                 emoji: emoji,

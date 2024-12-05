@@ -27,14 +27,6 @@ export function getNewer(d1: Date, d2: Date) {
 }
 
 /**
- * Always throws an error, returning an indeterminate value. This may be
- * used to terminate from a function early.
- */
-export function raise<T>(error: Error): T {
-    throw error;
-}
-
-/**
  * Picks a random integer, from `min` (inclusive) to `max` (exclusive). 
  * @param min The minimum bound, inclusive.
  * @param max The maximum bound, exclusive.
@@ -51,4 +43,11 @@ export function pickRandom<T>(arr: T[]): T {
         throw new Error("Attempted to pick a random element from an empty array.");
 
     return arr[rng(0, arr.length)];
+}
+
+/**
+ * Returns a `boolean` value, which has a `probability * 100`% chance of being `true`.
+ */
+export function chance(probability: number) {
+    return Math.random() < probability;
 }

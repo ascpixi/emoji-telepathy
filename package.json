@@ -1,6 +1,6 @@
 {
   "name": "emoji-telepathy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -27,6 +27,7 @@
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
     "react-turnstile": "^1.1.4",
+    "use-sound": "^4.0.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {

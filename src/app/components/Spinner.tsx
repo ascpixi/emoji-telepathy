@@ -17,5 +17,5 @@ export function Spinner({ width, height }: {
       </svg>
       <span className="sr-only">Loading...</span>
     </div>
-  )
+  );
 }

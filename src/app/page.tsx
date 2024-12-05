@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import useSound from "use-sound";
 
 import { sleep } from "./util";
-import { createGameConnection, GameConnection } from "./gameManager";
+import { createGameConnection, GameConnection } from "./game";
 import { MatchState } from "./api/match/state";
 import { TurnstileModal } from "./components/TurnstileModal";
 
@@ -19,7 +20,11 @@ export default function Home() {
 
   const [showTurnstile, setShowTurnstile] = useState(false);
 
+  const [sndClick] = useSound("/audio/click.wav");
+  const [sndMatchmaking] = useSound("/audio/matchmaking.wav")
+
   function handleStartClick() {
+    sndClick();
     setShowTurnstile(true);
   }
 
@@ -27,6 +32,7 @@ export default function Home() {
     setShowTurnstile(false);
     setLandingVisible(false);
 
+    sndMatchmaking();
     await sleep(250);
 
     setGameVisible(true);
@@ -43,10 +49,12 @@ export default function Home() {
       <LandingStage visible={landingVisible} onStart={handleStartClick} />
       <GameStage visible={gameVisible} game={game} matchState={matchState} />
 
-      { /* background grid */ }
-      <div
-        className="absolute -z-10 inset-0 h-full w-full bg-[#f9c19c] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
-      />
+      { /* background grid */}
+      <div className={`
+        absolute -z-10 inset-0 h-full w-full
+        bg-[#f9c19c] bg-[size:24px_24px]
+        bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)]
+      `} />
     </div>
   );
 }
